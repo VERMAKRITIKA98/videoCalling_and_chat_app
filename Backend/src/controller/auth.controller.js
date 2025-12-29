@@ -1,3 +1,4 @@
+import { upsertStreamUser } from "../lib/stream.js";
 import User from "../models/user.model.js";
 import jwt from 'jsonwebtoken';
 
@@ -29,6 +30,18 @@ export const signup = async (req, res) => {
             password,
             profilePic: randomAvatar 
         })
+
+        try {
+            await upsertStreamUser({
+                id: newUSer._id.toString(),
+                name: newUSer.name,
+                image: newUSer.profilePic || ""
+            });
+            console.log("Stream user created successfullly");   
+        } catch (error) {
+            console.log("Error in creating stream user", error)
+        }
+
         const token = jwt.sign({userId : newUSer._id}, process.env.JWT_SECRET_KEY, {
             expiresIn: "7d"
         })
@@ -80,3 +93,55 @@ export const logout =  (req, res)=>{
     res.clearCookie("jwt");
     res.status(200).json({ success: true, message : "logout successfully"});
 };
+
+export const onboard = async (req, res)=>{
+    try {
+        const userId = req.user._id;
+        const {name, bio, nativeLanguage, learningLanguage, location} = req.body;
+        if (
+            !name?.trim() ||
+            !bio?.trim() ||
+            !nativeLanguage?.trim() ||
+            !learningLanguage?.trim() ||
+            !location?.trim()
+          ) {          
+            return res.status(400).json({message: "All fields are required",
+                missingFields: [
+                    !name?.trim() && 'name',
+                    !bio?.trim() && 'bio',
+                    !nativeLanguage && 'nativeLanguages',
+                    !learningLanguage && 'learningLanguages',
+                    !location?.trim() && 'location',
+                ].filter(Boolean),
+            });
+        }
+
+        //update user info in stream
+        try {
+            await upsertStreamUser({
+                id: updatedUser._id.toString(),
+                name: updatedUser.name,
+                profilePic: updatedUser.profilePic || "",
+           })
+            console.log("Stream user updated successfully");
+        } catch (stemError) {
+            console.log("Error in updating stream user", stemError);
+        }
+        
+
+
+        const updatedUser = await User.findByIdAndUpdate(userId, {
+            name,
+            bio,
+            nativeLanguage,
+            learningLanguage,
+            location,
+            isOnboarded: true,
+        }, {new: true}); // this will give instant updated user Data
+        res.status(200).json({success: true, User: updatedUser});
+
+    }catch(error){
+        console.log("Error in onboard controller", error);
+        res.status(500).json({message: "something went wrong"});
+    }
+}
