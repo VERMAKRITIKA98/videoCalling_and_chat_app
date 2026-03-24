@@ -10,7 +10,7 @@ import OnboardingPage from './pages/OnboardingPage';
 import { Toaster } from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query';
 import { axiosInstance } from './lib/axios.js';
-import PageLoader from './components/Pageloader.jsx';
+import PageLoader from './components/PageLoader.jsx';
 // import { getAuthUser } from './lib/api.js';
 import useAuthUser from './hooks/useAuthUser.js';
 import Layout from './components/Layout.jsx';
