@@ -37,13 +37,13 @@ const OnboardingPage = () => {
   const handleRandomAvatar = () =>{
     const idx = Math.floor(Math.random() * 100) + 1;
     console.log('idx>>', idx);
-    const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
+    const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`; //https://api.dicebear.com/9.x/adventurer/png?seed=${idx}
     console.log('randomAvatar>>>', randomAvatar);
     setFormState({ ...formState, profilePic: randomAvatar});
     toast("profile pic update with a random avatar");
   }
   return (
-    <div className='min-h-screen bg-base-100 flex items-center justify-center p-4' data-theme="forest">
+    <div className='min-h-screen bg-base-100 flex items-center justify-center p-4'>
       <div className='card bg-slate-200 w-full max-w-3xl shadow-xl'>
         <div className='card-body p-6 sm:p-8'>
           <h1 className='text-2xl sm:text-3xl font-bold text-center mb-6'>Complete your Profile</h1>
@@ -53,7 +53,7 @@ const OnboardingPage = () => {
               {/* image preview */}
               <div className='size-32 rounded-full overflow-hidden bg-gray-300'>
                 { formState.profilePic ? (
-                  <img scr={formState.profilePic} alt='profile pic' className='w-full h-full object-cover'/>
+                  <img src={formState.profilePic} alt='profile pic' className='w-full h-full object-cover'/>
                 ) : (
                   <div className='flex items-center justify-center h-full'>
                     <CameraIcon className='size-12 text-base-content opacity-40'/>

@@ -12,7 +12,14 @@ const client = StreamChat.getInstance(api_key, api_secret);
 
 export const upsertStreamUser = async (userData)=>{
     try {
-        await client.upsertUser([userData]);
+        // await client.upsertUser([userData]);
+        await client.upsertUsers([
+            {
+                id: userData._id.toString(),   // 🔥 REQUIRED
+                name: userData.name,
+                image: userData.profilePic,
+            }
+        ]);
         return userData;
     }catch(error){
         console.log('error creating stream user', error);

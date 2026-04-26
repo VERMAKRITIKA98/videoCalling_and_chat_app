@@ -8,12 +8,12 @@ export async function recommendedUsers(req, res) {
 
         const recommendedFriends = await User.find({
             $and: [
-                { _id: { $ne: currentUserId}},
-                { _id: { $in: currentUser.friends}},
-                { isOnboarded: true}
-            ]
+                { _id: { $ne: currentUserId } }, //exclude current user
+                { _id: { $nin: currentUser.friends } }, // exclude current user's friends
+                { isOnboarded: true },
+              ],
         })
-        res.status(200).json({success, recommendedFriends})
+        res.status(200).json(recommendedFriends)
     } catch (error) {
         console.log("Error in recommendedUsers controller", error);
         res.status(500).json({message: "Internal server error"});
@@ -23,7 +23,7 @@ export async function recommendedUsers(req, res) {
 export async function getMyFriends(req, res) {
     try {
         const user = User.findOne(req.user.id).select("friends").populate("friends", "name profilePic bio learningLanguage nativeLanguage location");
-        res.status(200).json({success: true, friends: user.friends});
+        res.status(200).json(user.friends);
     } catch (error) {
         console.log("Error in getMyFriends controller", error);
         res.status(500).json({message: "Internal server error"});
